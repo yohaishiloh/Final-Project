@@ -8,7 +8,8 @@ This folder contains assembly workloads used to validate correctness and measure
 - `bubble_sort.asm` – splits the array work between two cores
 - `vector_add.asm` – shared-memory test for read-modify-write
 - `image_segmentation.asm` – simple 16×16 thresholding
-- In addition, the  folder contains the assembly codes used for the validation of the design
+
+In addition, the  folder contains the assembly codes used for the validation of the design
 
 ---
 

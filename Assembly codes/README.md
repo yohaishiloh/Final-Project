@@ -1,4 +1,4 @@
-## **Assembly Programs (DLX)**
+# **Assembly Programs (DLX)**
 
 This folder contains assembly workloads used to validate correctness and measure performance.
 

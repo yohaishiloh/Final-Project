@@ -1,0 +1,32 @@
+addi R1 R0 0x0100   * R1 = 256
+addi R2 R0 0x000B   * R2 = 11
+add R3 R0 R0        * R3 = 0
+lw R4 R3 0x0000 
+sgti R5 R4 0x007F 
+beqz R5 0x0003      * if R4 > 127
+addi R4 R0 0x00FF   * R4 = 255
+sw R4 R3 0x0000     * save new word
+jr R2               * end of 'if' - jump to PC 11 ("addi R3 R3 0x0001")
+addi R4 R0 0x0000   * else - R4 = 0
+sw R4 R3 0x0000     * save new word
+addi R3 R3 0x0001   * for both options - increment R3 by 1
+sgei R6 R3 0x0100
+beqz R6 0xFFF5      * if R3 >= 256 - end running. else - go back to PC 3
+lw R7 R0 0x0100
+lw R7 R0 0x0110
+lw R7 R0 0x0120
+lw R7 R0 0x0130
+lw R7 R0 0x0140
+lw R7 R0 0x0150
+lw R7 R0 0x0160
+lw R7 R0 0x0170
+lw R7 R0 0x0180
+lw R7 R0 0x0190
+lw R7 R0 0x01A0
+lw R7 R0 0x01B0
+lw R7 R0 0x01C0
+lw R7 R0 0x01D0
+lw R7 R0 0x01E0
+lw R7 R0 0x01F0     * Force clearing the block from the cache
+halt
+

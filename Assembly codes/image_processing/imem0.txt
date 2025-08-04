@@ -1,0 +1,23 @@
+addi R1 R0 0x0080    * R1 = 128 (half of original range)
+addi R2 R0 0x000B    * R2 = 11 (jump target)
+addi R3 R0 0x0000    * R3 = 0 (starting address for core 0)
+lw R4 R3 0x0000      * Load word from memory[R3]
+sgti R5 R4 0x007F    * Check if R4 > 127
+beqz R5 0x0003       * If R4 > 127, skip to set R4 = 255
+addi R4 R0 0x00FF    * R4 = 255
+sw R4 R3 0x0000      * Save new word
+jr R2                * Jump to increment section
+addi R4 R0 0x0000    * Else: R4 = 0
+sw R4 R3 0x0000      * Save new word
+addi R3 R3 0x0001    * Increment R3 by 1
+sgei R6 R3 0x0080        * Check if R3 >= 128
+beqz R6 0xFFF5       * If R3 < 128, go back to loop start
+lw R7 R0 0x0100
+lw R7 R0 0x0110
+lw R7 R0 0x0120
+lw R7 R0 0x0130
+lw R7 R0 0x0140
+lw R7 R0 0x0150
+lw R7 R0 0x0160
+lw R7 R0 0x0170      * Force clearing the block from cache
+halt                 * End execution

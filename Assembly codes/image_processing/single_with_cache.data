@@ -1,0 +1,37 @@
+2C010100 //	            	 addi R1 R0 0x0100   * R1 = 256
+2C02000B //	            	 addi R2 R0 0x000B   * R2 = 11
+00001823 //	            	 add R3 R0 R0        * R3 = 0
+8C640000 //	            	 lw R4 R3 0x0000 
+6485007F //	            	 sgti R5 R4 0x007F 
+10BF0003 //	            	 beqz R5 0x0003      * if R4 > 127
+2C0400FF //	            	 addi R4 R0 0x00FF   * R4 = 255
+AC640000 //	            	 sw R4 R3 0x0000     * save new word
+585F202A //	            	 jr R2               * end of 'if' - jump to PC 11 ("addi R3 R3 0x0001")
+2C040000 //	            	 addi R4 R0 0x0000   * else - R4 = 0
+AC640000 //	            	 sw R4 R3 0x0000     * save new word
+2C630001 //	            	 addi R3 R3 0x0001   * for both options - increment R3 by 1
+6C660100 //	            	 sgei R6 R3 0x0100
+10DFFFF5 //	            	 beqz R6 0xFFF5      * if R3 >= 256 - end running. else - go back to PC 3
+8C070100 //	            	 lw R7 R0 0x0100
+8C070110 //	            	 lw R7 R0 0x0110
+8C070120 //	            	 lw R7 R0 0x0120
+8C070130 //	            	 lw R7 R0 0x0130
+8C070140 //	            	 lw R7 R0 0x0140
+8C070150 //	            	 lw R7 R0 0x0150
+8C070160 //	            	 lw R7 R0 0x0160
+8C070170 //	            	 lw R7 R0 0x0170
+8C070180 //	            	 lw R7 R0 0x0180
+8C070190 //	            	 lw R7 R0 0x0190
+8C0701A0 //	            	 lw R7 R0 0x01A0
+8C0701B0 //	            	 lw R7 R0 0x01B0
+8C0701C0 //	            	 lw R7 R0 0x01C0
+8C0701D0 //	            	 lw R7 R0 0x01D0
+8C0701E0 //	            	 lw R7 R0 0x01E0
+8C0701F0 //	            	 lw R7 R0 0x01F0     * Force clearing the block from the cache
+FFFF6F69 //	            	 halt
+					            	 
+					            	 
+/*
+Label Report:
+*XML file date: Mon 19/5/2025 16:46:22
+*/

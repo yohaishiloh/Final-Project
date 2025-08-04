@@ -16,3 +16,7 @@ This folder contains the single-core DLX baseline used as a reference.
 - Compare performance vs. `Multicore/` design
 - Helpful for unit tests of instruction fetch/execute without coherence logic
 
+## Notes
+- The design was made during of the *Advanced Computer Structure Lab(ACSL)* Course the 2024 spring semester, checked and validated by both the course stuff and us. 
+- Since some modules used in the design was provided as black boxes and are not belongs to us, they only appears in the schemes but no further details (such as inner srtuctures) will be provided
+- Additional files (assembly codes, testbenches, documentation etc.) were omitted.

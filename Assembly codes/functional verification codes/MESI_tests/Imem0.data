@@ -1,0 +1,22 @@
+2C080008 //	            	 addi R8 R0 0x0008
+2C010001 //	            	 addi R1 R0 0x0001
+2C020002 //	            	 addi R2 R0 0x0002
+00221823 //	            	 add R3 R1 R2
+2C040004 //	            	 addi R4 R0 0x0004
+00832822 //	            	 sub R5 R4 R3
+00633023 //	            	 add R6 R3 R3
+2C070007 //	            	 addi R7 R0 0x0007
+01014022 //	            	 sub R8 R8 R1
+151FFFF7	 //            	 bnez R8 0xFFF7
+AC050000 //	            	 sw R5 R0 0x0000
+AC060010 //	            	 sw R6 R0 0x0010
+AC000104 //	            	 sw R0 R0 0x0104
+8C050000 //	            	 lw R5 R0 0x0000
+8C070010 //	            	 lw R7 R0 0x0010
+8C090120 //	            	 lw R9 R0 0x0120
+FFFFAF8E	     //        	 halt
+					            	 
+/*
+Label Report:
+*XML file date: Sun 24/6/2012 17:10:34
+*/

@@ -1,0 +1,17 @@
+addi R8 R0 0x0008
+addi R1 R0 0x0001
+addi R2 R0 0x0002
+add R3 R1 R2
+addi R4 R0 0x0004
+sub R5 R4 R3
+add R6 R3 R3
+addi R7 R0 0x0007
+sub R8 R8 R1
+bnez R8 0xFFF7
+sw R5 R0 0x0000
+sw R6 R0 0x0010
+sw R0 R0 0x0104
+lw R5 R0 0x0000
+lw R7 R0 0x0010
+lw R9 R0 0x0120
+halt

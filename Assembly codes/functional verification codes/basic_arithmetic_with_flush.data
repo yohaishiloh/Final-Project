@@ -1,0 +1,14 @@
+0x2C010001 //	            	 addi R1 R0 0x0001
+0x2C020002 //	            	 addi R2 R0 0x0002
+0x00221823 //	            	 add R3 R1 R2
+0x2C040004 //	            	 addi R4 R0 0x0004
+0x00832822 //	            	 sub R5 R4 R3
+0x00633023 //	            	 add R6 R3 R3
+0xAC050000 //	            	 sw R5 R0 0x0000
+0xAC060100 //	            	 sw R6 R0 0x0100
+0xFFFF0000 //	            	 halt
+					            	 
+/*
+Label Report:
+*XML file date: Sun 24/6/2012 17:10:34
+*/

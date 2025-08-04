@@ -1,0 +1,4 @@
+addi R1 R0 0x00FF
+sw R1 R0 0x0010
+lw R2 R0 0x0120
+halt

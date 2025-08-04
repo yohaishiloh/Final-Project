@@ -1,0 +1,9 @@
+2C0100FF //	            	 addi R1 R0 0x00FF
+AC010010 //	            	 sw R1 R0 0x0010
+8C020120 //	            	 lw R2 R0 0x0120
+FFFFFFFF	  //          	 halt
+					            	 
+/*
+Label Report:
+*XML file date: Sun 24/6/2012 17:10:34
+*/

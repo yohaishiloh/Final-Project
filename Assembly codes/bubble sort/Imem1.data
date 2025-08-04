@@ -1,0 +1,92 @@
+2C010010 // addi R1 R0 0x0010    // R1 = 8 (half array size)
+2C020001 // addi R2 R0 0x0001    // R2 = 1 (constant)
+00221822 // sub R3 R1 R2         // R3 = 7 (n-1 for half array)
+2C140010 // addi R20 R0 0x0010   // R20 = 8 (offset for second half)
+// OUTER LOOP: i = 7 down to 1
+02802023 // add R4 R20 R0        // R4 = 8 (start from offset 8)
+// INNER LOOP: j = 8 to (8 + i - 1)
+8C850000 // lw R5 R4 0x0000      // R5 = array[j]
+2C860001 // addi R6 R4 0x0001    // R6 = j + 1
+8CC70000 // lw R7 R6 0x0000      // R7 = array[j+1]
+00E54022 // sub R8 R7 R5
+71080000 // slti R8 R8 0x0000    // R8 = 1 if need swap
+111F0002 // beqz R8 0x0002       // If no swap needed, skip
+// SWAP
+AC870000 // sw R7 R4 0x0000      // array[j] = array[j+1]
+ACC50000 // sw R5 R6 0x0000      // array[j+1] = array[j]
+// INCREMENT INNER LOOP
+2C840001 // addi R4 R4 0x0001    // j++
+0283A823 // add R21 R20 R3       // R21 = 8 + i (upper bound)
+00954822 // sub R9 R4 R21
+71290000 // slti R9 R9 0x0000    // R9 = 1 if j < upper bound
+153FFFF3 // bnez R9 0xFFF3       // Continue inner loop
+// DECREMENT OUTER LOOP AND RESET INNER
+00621822 // sub R3 R3 R2         // i--
+02802023 // add R4 R20 R0        // Reset j to start of second half
+646A0000 // sgti R10 R3 0x0000   // R10 = 1 if i > 0
+155FFFEE // bnez R10 0xFFEF      // Continue outer loop
+// SYNCHRONIZATION: Wait for Core 0 to complete
+8C160100 // lw R22 R0 0x0100     // Load completion flag
+12DFFFFE // beqz R22 0xFFFE      // Wait until Core 0 is done
+// MERGE: Combine two sorted halves
+0000B823 // add R23 R0 R0        // R23 = 0 (index for first half)
+2C180010 // addi R24 R0 0x0010   // R24 = 8 (index for second half)
+0000C823 // add R25 R0 R0        // R25 = 0 (index for merged array)
+2C1A0010 // addi R26 R0 0x0010   // R26 = 8 (size of each half)
+2C010020 // addi R1 R0 0x0020    // R1 = 32 (total size, fix previous usage)
+// MERGE LOOP
+02FAD822 // sub R27 R23 R26
+737B0000 // slti R27 R27 0x0000  // R27 = 1 if first half not exhausted
+0301E022 // sub R28 R24 R1
+739C0000 // slti R28 R28 0x0000  // R28 = 1 if second half not exhausted
+037CE826 // and R29 R27 R28      // R29 = 1 if both halves have elements
+13BF000F // beqz R29 0x000F      // If one half exhausted, copy remaining
+// Compare elements from both halves
+8EFE0000 // lw R30 R23 0x0000    // R30 = array[i] from first half
+8F1F0000 // lw R31 R24 0x0000    // R31 = array[j] from second half
+03DF2022 // sub R4 R30 R31
+70840000 // slti R4 R4 0x0000    // R4 = 1 if first <= second
+149F0003 // bnez R4 0x0003       // If first <= second, take from first half
+AF3F0030 // sw R31 R25 0x0030    // Store second half element
+2F180001 // addi R24 R24 0x0001  // Increment second half index
+101F0002 // beqz R0 0x0002       // Jump to increment merged index
+AF3E0030 // sw R30 R25 0x0030    // Store first half element
+2EF70001 // addi R23 R23 0x0001  // Increment first half index
+2F390001 // addi R25 R25 0x0001  // Increment merged array index
+2C020020 // addi R2 R0 0x0020    // R2 = 32
+03221822 // sub R3 R25 R2
+70630000 // slti R3 R3 0x0000    // Check if merge complete
+147FFFEB // bnez R3 0xFFEB       // Continue merge if not done
+// Copy remaining elements (if any)
+02FA2822 // sub R5 R23 R26
+70A50000 // slti R5 R5 0x0000    // Check if first half has remaining
+10BF0005 // beqz R5 0x0005       // If not, check second half
+8EE60000 // lw R6 R23 0x0000     // Copy from first half
+AF260030 // sw R6 R25 0x0030
+2EF70001 // addi R23 R23 0x0001
+2F390001 // addi R25 R25 0x0001
+101FFFF8 // beqz R0 0xFFF8       // Continue copying first half
+03013822 // sub R7 R24 R1
+70E70000 // slti R7 R7 0x0000    // Check if second half has remaining
+10FF0005 // beqz R7 0x0005       // If not, copy back to original
+8F080000 // lw R8 R24 0x0000     // Copy from second half
+AF280030 // sw R8 R25 0x0030
+2F180001 // addi R24 R24 0x0001
+2F390001 // addi R25 R25 0x0001
+101FFFFB // beqz R0 0xFFFB       // Continue copying second half
+// Copy merged array back to original location
+00004823 // add R9 R0 R0         // R9 = 0 (copy index)
+8D2A0030 // lw R10 R9 0x0030     // Load from merged array
+AD2A0000 // sw R10 R9 0x0000     // Store to original array
+2D290001 // addi R9 R9 0x0001    // Increment copy index
+01215822 // sub R11 R9 R1
+716B0000 // slti R11 R11 0x0000  // Check if all copied
+157FFFFA // bnez R11 0xFFFA      // Continue copying
+8C010130 // lw R1 R0 0x0130      // force clearing sorted array
+8C010140 //	lw R1 R0 0x0140      // force clearing sorted array
+FFFF0000 // halt                 // End execution
+
+/*
+Label Report:
+*XML file date: Mon 19/5/2025 16:46:22
+*/

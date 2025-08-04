@@ -1,0 +1,112 @@
+* CORE 1: Sort second half (elements 8-15)
+* Array stored at 0x0008-0x000F (offset by 8)
+
+addi R1 R0 0x0010    * R1 = 8 (half array size)
+addi R2 R0 0x0001    * R2 = 1 (constant)
+sub R3 R1 R2         * R3 = 7 (n-1 for half array)
+addi R20 R0 0x0010   * R20 = 8 (offset for second half)
+
+* OUTER LOOP: i = 7 down to 1
+add R4 R20 R0        * R4 = 8 (start from offset 8)
+
+* INNER LOOP: j = 8 to (8 + i - 1)
+lw R5 R4 0x0000      * R5 = array[j]
+addi R6 R4 0x0001    * R6 = j + 1
+lw R7 R6 0x0000      * R7 = array[j+1]
+sub R8 R7 R5
+slti R8 R8 0x0000         * R8 = 1 if need swap
+beqz R8 0x0002       * If no swap needed, skip
+
+* SWAP
+sw R7 R4 0x0000      * array[j] = array[j+1]
+sw R5 R6 0x0000      * array[j+1] = array[j]
+
+* INCREMENT INNER LOOP
+addi R4 R4 0x0001    * j++
+add R21 R20 R3       * R21 = 8 + i (upper bound)
+sub R9 R4 R21
+slti R9 R9 0x0000        * R9 = 1 if j < upper bound
+bnez R9 0xFFF3       * Continue inner loop
+
+* DECREMENT OUTER LOOP AND RESET INNER
+sub R3 R3 R2         * i--
+add R4 R20 R0        * Reset j to start of second half
+sgti R10 R3 0x0000        * R10 = 1 if i > 0
+bnez R10 0xFFEF      * Continue outer loop
+
+* SYNCHRONIZATION: Wait for Core 0 to complete
+lw R22 R0 0x0100     * Load completion flag
+beqz R22 0xFFFE      * Wait until Core 0 is done
+
+* MERGE: Combine two sorted halves
+* Merge sorted arrays [0-7] and [8-15] into temporary array at 0x0030
+
+add R23 R0 R0        * R23 = 0 (index for first half)
+addi R24 R0 0x0010   * R24 = 16 (index for second half)
+add R25 R0 R0        * R25 = 0 (index for merged array)
+addi R26 R0 0x0010   * R26 = 16 (size of each half)
+addi R1 R0 0x0020    * R1 = 32 (total size, fix previous usage)
+
+* MERGE LOOP
+sub R27 R23 R26 
+slti R27 R27 0x0000      * R27 = 1 if first half not exhausted
+sub R28 R24 R1
+slti R28 R28 0x0000      * R28 = 1 if second half not exhausted
+and R29 R27 R28      * R29 = 1 if both halves have elements
+
+beqz R29 0x000F      * If one half exhausted, copy remaining
+
+* Compare elements from both halves
+lw R30 R23 0x0000    * R30 = array[i] from first half
+lw R31 R24 0x0000    * R31 = array[j] from second half
+sub R4 R30 R31
+slti R4 R4 0x0000      * R32 = 1 if first <= second
+
+bnez R4 0x0003      * If first <= second, take from first half
+sw R31 R25 0x0030    * Store second half element
+addi R24 R24 0x0001  * Increment second half index
+beqz R0 0x0002            * Jump to increment merged index
+
+sw R30 R25 0x0030    * Store first half element
+addi R23 R23 0x0001  * Increment first half index
+
+addi R25 R25 0x0001  * Increment merged array index
+addi R2 R0 0x0020   * R2 = 32
+sub R3 R25 R2
+slti R3 R3 0x0000      * Check if merge complete
+bnez R3 0xFFEB      * Continue merge if not done
+
+* Copy remaining elements (if any)
+sub R5 R23 R26
+slti R5 R5 0x0000      * Check if first half has remaining
+beqz R5 0x0005      * If not, check second half
+
+lw R6 R23 0x0000    * Copy from first half
+sw R6 R25 0x0030    
+addi R23 R23 0x0001
+addi R25 R25 0x0001
+beqz R0 0xFFF8            * Continue copying first half
+
+sub R7 R24 R1
+slti R7 R7 0x0000       * Check if second half has remaining
+beqz R7 0x0005      * If not, copy back to original
+
+lw R8 R24 0x0000    * Copy from second half
+sw R8 R25 0x0030
+addi R24 R24 0x0001
+addi R25 R25 0x0001
+beqz R0 0xFFFB            * Continue copying second half
+
+* Copy merged array back to original location
+add R9 R0 R0        * R39 = 0 (copy index)
+lw R10 R9 0x0030    * Load from merged array
+sw R10 R9 0x0000    * Store to original array
+addi R9 R9 0x0001  * Increment copy index
+sub R11 R9 R1
+slti R11 R11 0x0000       * Check if all copied
+bnez R11 0xFFFA      * Continue copying
+
+lw R1 R0 0x0130      * force clearing sorted array
+lw R1 R0 0x0140      * force clearing sorted array
+
+halt                 * End execution

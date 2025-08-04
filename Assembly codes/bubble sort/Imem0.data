@@ -1,0 +1,33 @@
+2C010010 // addi R1 R0 0x0010    // R1 = 16 (half array size)
+2C020001 // addi R2 R0 0x0001    // R2 = 1 (constant)
+00221822 // sub R3 R1 R2         // R3 = 15 (n-1 for half array)
+// OUTER LOOP: i = 7 down to 1
+00002023 // add R4 R0 R0         // R4 = 0 (inner loop counter j)
+// INNER LOOP: j = 0 to i-1
+8C850000 // lw R5 R4 0x0000      // R5 = array[j]
+2C860001 // addi R6 R4 0x0001    // R6 = j + 1
+8CC70000 // lw R7 R6 0x0000      // R7 = array[j+1]
+00E54022 // sub R8 R7 R5
+710C0000 // slti R12 R8 0x0000   // R8 = 1 if need swap
+119F0002 // beqz R12 0x0002       // If no swap needed, skip
+// SWAP
+AC870000 // sw R7 R4 0x0000      // array[j] = array[j+1]
+ACC50000 // sw R5 R6 0x0000      // array[j+1] = array[j]
+// INCREMENT INNER LOOP
+2C840001 // addi R4 R4 0x0001    // j++
+00834022 // sub R8 R4 R3
+71090000 // slti R9 R8 0x0000    // R9 = 1 if j < i
+153FFFF4 // bnez R9 0xFFF4       // Continue inner loop
+// DECREMENT OUTER LOOP
+00621822 // sub R3 R3 R2         // i--
+646A0000 // sgti R10 R3 0x0000   // R10 = 1 if i > 0
+155FFFF0 // bnez R10 0xFFF0      // Continue outer loop
+// SYNCHRONIZATION POINT (Core 0 signals completion)
+2C0B0001 // addi R11 R0 0x0001   // R11 = 1 (completion flag)
+AC0B0100 // sw R11 R0 0x0100     // Store completion flag at 0x0100
+FFFF081C // halt                 // Core 0 done
+
+/*					            	 
+Label Report:
+*XML file date: Mon 19/5/2025 16:46:22
+*/

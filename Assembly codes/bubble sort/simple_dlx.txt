@@ -1,0 +1,32 @@
+* Initialize
+addi R1 R0 0x0010    * R1 = 16 (array size)
+addi R2 R0 0x0001    * R2 = 1 (constant for decrementing)
+sub R3 R1 R2         * R3 = 15 (n-1, outer loop counter)
+
+* OUTER LOOP: i = n-1 down to 1
+add R4 R0 R0         * R4 = 0 (inner loop counter j)
+
+* INNER LOOP: j = 0 to i-1
+lw R5 R4 0x0000      * R5 = array[j]
+addi R6 R4 0x0001    * R6 = j + 1
+lw R7 R6 0x0000      * R7 = array[j+1]
+sub R8 R7 R5
+slti R11 R8 0x0000         * R8 = 1 if array[j+1] < array[j] (need swap)
+beqz R8 0x0004       * If no swap needed, skip swap code
+
+* SWAP: array[j] <-> array[j+1]
+sw R7 R4 0x0000      * array[j] = array[j+1]
+sw R5 R6 0x0000      * array[j+1] = array[j]
+
+* INCREMENT INNER LOOP
+addi R4 R4 0x0001    * j++
+sub R8 R4 R3
+slti R9 R8 0x0000         * R9 = 1 if j < i
+bnez R9 0xFFF6       * If j < i, continue inner loop
+
+* DECREMENT OUTER LOOP
+sub R3 R3 R2         * i-- (i = i - 1)
+sgti R10 R3 0x0000        * R10 = 1 if i > 0
+bnez R10 0xFFEF      * If i > 0, continue outer loop
+
+halt                 * End execution

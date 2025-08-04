@@ -1,0 +1,35 @@
+addi R1 R0 0x0010    * R1 = 16 (half array size)
+addi R2 R0 0x0001    * R2 = 1 (constant)
+sub R3 R1 R2         * R3 = 15 (n-1 for half array)
+
+* OUTER LOOP: i = 7 down to 1
+add R4 R0 R0         * R4 = 0 (inner loop counter j)
+
+* INNER LOOP: j = 0 to i-1
+lw R5 R4 0x0000      * R5 = array[j]
+addi R6 R4 0x0001    * R6 = j + 1
+lw R7 R6 0x0000      * R7 = array[j+1]
+sub R8 R7 R5
+slti R12 R8 0x0000   * R8 = 1 if need swap
+beqz R12 0x0002       * If no swap needed, skip
+
+* SWAP
+sw R7 R4 0x0000      * array[j] = array[j+1]
+sw R5 R6 0x0000      * array[j+1] = array[j]
+
+* INCREMENT INNER LOOP
+addi R4 R4 0x0001    * j++
+sub R8 R4 R3
+slti R9 R8 0x0000    * R9 = 1 if j < i
+bnez R9 0xFFF4       * Continue inner loop
+
+* DECREMENT OUTER LOOP
+sub R3 R3 R2         * i--
+sgti R10 R3 0x0000        * R10 = 1 if i > 0
+bnez R10 0xFFF0      * Continue outer loop
+
+* SYNCHRONIZATION POINT (Core 0 signals completion)
+addi R11 R0 0x0001   * R11 = 1 (completion flag)
+sw R11 R0 0x0100     * Store completion flag at 0x0100
+halt                 * Core 0 done
+

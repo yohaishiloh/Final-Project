@@ -24,3 +24,4 @@ This folder holds the multicore top-level and the cache/bus/coherence logic.
 - Block size: 16 words (burst transfers of 16 cycles)
 - Coherence: write-invalidate (MESI), cache-to-cache transfer on modified line when needed
 - Bus snooping: tag-memory listens & updates states accordingly
+- The folder contains bit file and lables file, for loading the design into FPGA board

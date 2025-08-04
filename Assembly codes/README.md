@@ -18,3 +18,9 @@ This folder contains assembly workloads used to validate correctness and measure
 3. Prepare `sram.data` / `.cod` for main memory initialization (1024 lines max, hex format).
 4. Place the files where the simulator/FPGA flow expects them.
 
+---
+
+ ### Notes
+ - Each program directory contains the codes for each of the processor versions in seperated files - a version for the full design (multicore with cache and MESI protocol), an adjusted version for the original DLX and another version for the single core with cache only (usually located in a sub-directory). 
+- The .data files are the machine code files for each program
+- The assembly codes can be found in the .txt file

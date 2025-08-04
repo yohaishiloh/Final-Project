@@ -1,0 +1,14 @@
+2C010010 //	            	 addi R1 R0 0x0010 * half of the vector size
+2C21FFFF //	            	 addi R1 R1 0xFFFF
+8C220010 //	            	 lw R2 R1 0x0010
+8C230030 //	            	 lw R3 R1 0x0030
+00622023 //	            	 add R4 R3 R2
+AC240050 //	            	 sw R4 R1 0x0050
+143FFFFA //	            	 bnez R1 0xFFFA
+8C051050 //	            	 lw R5 R0 0x1050
+FFFF0010 //	            	 halt
+					            	 
+/*
+Label Report:
+*XML file date: Mon 19/5/2025 16:46:22
+*/

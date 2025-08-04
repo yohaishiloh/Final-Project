@@ -1,0 +1,10 @@
+addi R1 R0 0x001F * half of the vector size
+lw R2 R1 0x0000
+lw R3 R1 0x0020
+add R4 R3 R2
+sw R4 R1 0x0040
+addi R1 R0 0xFFFF
+bnez R1 0xFFFA
+lw R5 R0 0x0140
+lw R6 R0 0x0150
+halt

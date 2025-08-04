@@ -16,7 +16,7 @@ This folder holds the multicore top-level and the cache/bus/coherence logic.
 ## Build & Sim
 1. Include all `.v` files from this folder.
 2. Compile with your preferred simulator.
-3. Use testbenches from `Assembly codes/` to drive memory ops and observe MESI state transitions.
+3. Use testbenches and a program from `Assembly codes/` to drive memory ops and observe MESI state transitions.
 
 ---
 

@@ -31,6 +31,22 @@ Dual-core DLX-based processor with hardware cache coherence (MESI), implemented 
 
 ---
 
+## Files in the root folder
+- **`README.md`** – this document.  
+- **`Multicore DLX MESI Project Report.pdf`** – full written final report.  
+- **`project final presentation.pdf`** – final project presentation slides.  
+- **`Mid presentation - multicore with MESI.pdf`** – mid-term progress presentation.  
+- **`Poster - Multicore with MESI.pdf`** – academic project poster summarizing the work.  
+
+---
+
+## Tools & Flow
+- **Assembler:** [RESA] used to compile assembly (`.txt`) into `.data` machine-code images.  
+- **Simulation:** RTL simulation with Verilog testbenches.  
+- **FPGA Deployment:** Implemented and tested on Xilinx Spartan-6 (XuLA2-LX25) board and RESA environment.  
+
+---
+
 ## Benchmarks
 The system was evaluated with:
 - **Bubble sort** (array split into two parts/blocks, one per core)

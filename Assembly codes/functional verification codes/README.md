@@ -4,7 +4,7 @@ This folder contains small programs used for **bring-up** and **functional valid
 
 ---
 
-## 📋 Programs
+## Programs
 - `basic_arithmetic.txt` — simple add/subtract/store test.  
 - `basic_arithmetic_with_flush.txt` — extended arithmetic test with additional memory operations.  
 - `halt.txt` — minimal program to test HALT functionality.  
@@ -15,7 +15,7 @@ This folder contains small programs used for **bring-up** and **functional valid
 
 ---
 
-## ▶️ Purpose
+## Purpose
 These workloads are used during bring-up and debugging to:
 - Verify instruction execution.  
 - Test memory access correctness.  
